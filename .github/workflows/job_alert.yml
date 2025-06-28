@@ -2,7 +2,7 @@ name: Job Alert Bot
 
 on:
   schedule:
-    - cron: '*/25 * * * *'  # every 25 minute
+    - cron: '*/30 * * * *'  # every 30 minute
   workflow_dispatch:  # also allows manual run
 
 jobs:
