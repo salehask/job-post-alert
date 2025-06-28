@@ -1,6 +1,5 @@
 import requests
 import os
-import json
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
@@ -31,7 +30,7 @@ def check_job_post():
         return
 
     latest = jobs[0]
-    job_id = str(latest['id'])  # Use ID to track
+    job_id = str(latest['id'])  # Use unique job ID
     title = latest['title']
     company = latest['companyName']
     location = latest['location']
@@ -41,5 +40,8 @@ def check_job_post():
         message = f"🧑‍💼 New Job Posted!\n\n📌 Title: {title}\n🏢 Company: {company}\n📍 Location: {location}"
         send_telegram_message(message)
         write_last_job(job_id)
+    else:
+        print("No new job found.")
 
 check_job_post()
+
