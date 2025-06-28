@@ -23,8 +23,9 @@ def write_last_job(job_id):
 def check_job_post():
     url = "https://placements.codegnan.com/api/jobposts/getAllJobs"
     headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "JobAlertBot/1.0 (Personal use by student for job updates)"
     }
+
     response = requests.get(url, headers=headers)
 
     try:
@@ -39,7 +40,7 @@ def check_job_post():
         return
 
     latest = jobs[0]
-    job_id = str(latest['id'])  # Use unique job ID
+    job_id = str(latest['id'])  # Unique job ID
     title = latest['title']
     company = latest['companyName']
     location = latest['location']
@@ -53,3 +54,4 @@ def check_job_post():
         print("No new job found.")
 
 check_job_post()
+
