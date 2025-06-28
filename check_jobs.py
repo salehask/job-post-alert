@@ -22,8 +22,17 @@ def write_last_job(job_id):
 
 def check_job_post():
     url = "https://placements.codegnan.com/api/jobposts/getAllJobs"
-    response = requests.get(url)
-    jobs = response.json()
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+    response = requests.get(url, headers=headers)
+
+    try:
+        jobs = response.json()
+    except Exception as e:
+        print("Failed to decode JSON. Response text:")
+        print(response.text)
+        return
 
     if not jobs:
         print("No jobs found.")
@@ -44,4 +53,3 @@ def check_job_post():
         print("No new job found.")
 
 check_job_post()
-
