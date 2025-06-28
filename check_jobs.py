@@ -1,6 +1,6 @@
 import requests
-from bs4 import BeautifulSoup
 import os
+import json
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
@@ -17,31 +17,29 @@ def read_last_job():
     with open(LAST_JOB_FILE, "r") as f:
         return f.read().strip()
 
-def write_last_job(job_title):
+def write_last_job(job_id):
     with open(LAST_JOB_FILE, "w") as f:
-        f.write(job_title)
+        f.write(job_id)
 
 def check_job_post():
-    url = "https://placements.codegnan.com/jobslist"
+    url = "https://placements.codegnan.com/api/jobposts/getAllJobs"
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    jobs = response.json()
 
-    job_table = soup.find('table', id='jobs')
-    first_row = job_table.find('tbody').find('tr')
-    cells = first_row.find_all('td')
-
-    if not cells:
+    if not jobs:
         print("No jobs found.")
         return
 
-    job_title = cells[0].text.strip()
-    company = cells[1].text.strip()
-    location = cells[2].text.strip()
+    latest = jobs[0]
+    job_id = str(latest['id'])  # Use ID to track
+    title = latest['title']
+    company = latest['companyName']
+    location = latest['location']
 
-    last_job = read_last_job()
-    if job_title != last_job:
-        message = f"🧑‍💼 New Job Posted!\n\n📌 Title: {job_title}\n🏢 Company: {company}\n📍 Location: {location}"
+    last_id = read_last_job()
+    if job_id != last_id:
+        message = f"🧑‍💼 New Job Posted!\n\n📌 Title: {title}\n🏢 Company: {company}\n📍 Location: {location}"
         send_telegram_message(message)
-        write_last_job(job_title)
+        write_last_job(job_id)
 
 check_job_post()
